@@ -11,35 +11,74 @@
 /* ************************************************************************** */
 #include "get_next_line.h"
 
-char	*get_next_line(int fd)
-{
-	static char	*buffer;
+char	*ft_get_rest(char *rest, char *buffer, char *out)
+{	
 	char	*temp;
+	int	i;
+	int	j;
+
+	temp = ft_strjoin(rest, buffer);
+	i = 0;
+	while (temp[i] == out[i])
+		i++;
+	j = i;
+	while(temp[j])
+		j++;
+	free(rest);
+	rest = malloc(sizeof(char) * j + 1);
+	if (!rest)
+		return (NULL);
+	j = 0;
+	while(temp[i])
+	{
+		rest[j] = temp[i];
+		j++;
+		i++;
+	}
+	rest[j] = '\0';
+	return (free(temp), rest);
+}
+
+char	*ft_new_line(char *buffer, char *rest)
+{
+	int		i;
 	char	*out;
 
+	i = 0;
+	while (rest[i - 1] != '\n' && rest[i])
+		i++;
+	if (rest[i - 1] == '\n' || (rest[i] == '\0' && !buffer))
+	{
+		out = ft_nlncpy(rest, i);
+		return (out);
+	}
+	else
+		out = ft_nljoin(rest, buffer);
+		return (out);
+}
+
+char	*get_next_line(int fd)
+{
+	char		*buffer;
+	char		*out;
+	static char	*rest;
+	
+	if (BUFFER_SIZE < 1 || fd < 0)
+		return (NULL);
+	if (!rest)
+		rest = "";
 	buffer = malloc(sizeof(char) * BUFFER_SIZE);
 	if (!buffer)
 		return (NULL);
 	read(fd, buffer, BUFFER_SIZE);
-	temp = buffer;
-	while (*buffer != '\n' && *buffer)
-		buffer++;
-	if (*buffer == '\0')
-	{
-		out = ft_strdup(temp);
-		return (out);
-	}
-	if (*buffer == '\n')
-	{
-		out = malloc(sizeof(char) * get_new_line_len(temp) + 1);
-		if (!out)
-			return (NULL);
-		*buffer = '\0';
-		out = ft_new_line_cpy(out, temp);
-		return (out);
-	}
-	return (NULL);
+	if (!buffer)
+		return (NULL);
+	out = ft_new_line(buffer, rest);
+	rest = ft_get_rest(rest, buffer, out); 
+	return (free(buffer), out);
 }
+
+#include <stdio.h>
 
 int	main()
 {
@@ -48,10 +87,26 @@ int	main()
 
 	fd = open("get_next_line.h", O_RDONLY);
 	if (fd < 0)
-		return (-1);
+		return (printf("error\n"));
 	str = get_next_line(fd);
-	write (1, str, BUFFER_SIZE);
-	str = get_next_line(fd);
-	write (1, str, BUFFER_SIZE);
-	return (0);
+	printf("%s\n", str);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

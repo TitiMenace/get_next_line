@@ -24,9 +24,12 @@
 #include <stdlib.h>
 
 char	*get_next_line(int fd);
+char	*ft_new_line(char *buffer, char *rest);
+char	*ft_get_rest(char *rest, char *buffer, char *out);
+char	*ft_nlncpy(char *src, int n);
+char	*ft_nljoin(char *s1, char *s2);
+int	ft_nljoinlen(char *str);
+char	*ft_strjoin(char *s1, char *s2);
 int	ft_strlen(char *str);
-int	get_new_line_len(char *str);
-char	*ft_new_line_cpy(char *dest, char *src);
-char	*ft_strdup(char *str);
 
 #endif

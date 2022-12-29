@@ -11,53 +11,89 @@
 /* ************************************************************************** */
 #include "get_next_line.h"
 
-int	ft_strlen(char *str)
+char	*ft_nlncpy(char *src, int n)
 {
 	int	i;
-	
+	char	*out;
+
+	out = malloc(sizeof(char) * n + 1);
+	if (!out)
+		return (NULL);
 	i = 0;
-	while (str[i])
+	while (src[i] && i < n)
+	{
+		out[i] = src[i];
+		i++;
+	}
+	out[i] = '\0';
+	return (out);
+}
+
+int	ft_nljoinlen(char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i] && str[i - 1] != '\n')
 		i++;
 	return (i);
 }
 
-int	get_new_line_len(char *str)
+char	*ft_nljoin(char *s1, char *s2)
+{
+	 char	*out;
+	 int	i;
+	 int	j;
+
+	 out = malloc(sizeof(char) * (ft_nljoinlen(s1) + ft_nljoinlen(s2)) + 1);
+	 if (!out)
+		 return (NULL);
+	 i = 0;
+	 while (s1[i])
+	 {
+		out[i] = s1[i];
+		i++;
+	 }
+	 j = 0;
+	 while (s2[j] && s2[j - 1] != '\n')
+	 {
+		out[i] = s2[j];
+		j++;
+		i++;
+	 }
+	 out[i] = '\0';
+	 return (out);
+}
+
+int	ft_strlen(char *str)
 {
 	int	i;
 
 	i = 0;
-	while (str[i] != '\n')
+	while(str[i])
 		i++;
-	return (1);
+	return (i);
 }
-
-char	*ft_new_line_cpy(char *dest, char *src)
-{
-	int	i;
-	
-	i = 0;
-	while (src[i])
-	{
-		dest[i] = src[i];
-		i++;
-	}
-	dest[i] = '\0';
-	return (dest);
-}
-
-char *ft_strdup(char *str)
+char	*ft_strjoin(char *s1, char *s2)
 {
 	char	*out;
 	int	i;
+	int	j;
 
-	out = malloc(sizeof(char) * ft_strlen(str) + 1);
+	out = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
 	if (!out)
 		return (NULL);
 	i = 0;
-	while (str[i])
+	while (s1[i])
 	{
-		out[i] = str[i];
+		out[i] = s1[i];
 		i++;
+	}
+	while (s2[j])
+	{
+		out[i] = s2[j];
+		i++;
+		j++;
 	}
 	out[i] = '\0';
 	return (out);
