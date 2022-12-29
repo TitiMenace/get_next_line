@@ -89,6 +89,7 @@ char	*ft_strjoin(char *s1, char *s2)
 		out[i] = s1[i];
 		i++;
 	}
+	j = 0;
 	while (s2[j])
 	{
 		out[i] = s2[j];
