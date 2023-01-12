@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: tschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/25 00:41:05 by tschecro          #+#    #+#             */
-/*   Updated: 2022/11/25 04:42:31 by tschecro         ###   ########.fr       */
+/*   Created: 2023/01/12 02:09:52 by tschecro          #+#    #+#             */
+/*   Updated: 2023/01/12 02:17:48 by tschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,28 @@
 # define GET_NEXT_LINE_H
 
 #ifndef BUFFER_SIZE
-# define BUFFER_SIZE 1000
+# define BUFFER_SIZE 42
 #endif
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <stdlib.h>
+# include <fcntl.h>
+# include <unistd.h>
+# include <stdlib.h>
+# include <stdio.h>
 
+/* -------------------------------------------------------------------------- */
+/*                       FILE = ./get_next_line_utils.c                       */
+/* -------------------------------------------------------------------------- */
+int		ft_strlen(char *str);
+char	*ft_strndup(char *str);
+int		check_buff(char *buffer, char c);
+char	*ft_strjoin(char *remain, char *buffer);
+
+/* -------------------------------------------------------------------------- */
+/*                          FILE = ./get_next_line.c                          */
+/* -------------------------------------------------------------------------- */
+char	*ft_fill_line(char *buffer, int fd, char **remain);
+char	*clean_remain(char *remain);
 char	*get_next_line(int fd);
-char	*ft_new_line(char *buffer, char *rest);
-char	*ft_get_rest(char *rest, char *buffer, char *out);
-char	*ft_nlncpy(char *src, int n);
-char	*ft_nljoin(char *s1, char *s2);
-int	ft_nljoinlen(char *str);
-char	*ft_strjoin(char *s1, char *s2);
-int	ft_strlen(char *str);
+
 
 #endif

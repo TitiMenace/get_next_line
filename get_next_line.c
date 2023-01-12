@@ -5,108 +5,72 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: tschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/25 00:37:18 by tschecro          #+#    #+#             */
-/*   Updated: 2022/11/25 05:09:11 by tschecro         ###   ########.fr       */
+/*   Created: 2023/01/12 02:05:36 by tschecro          #+#    #+#             */
+/*   Updated: 2023/01/12 06:26:32 by tschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "get_next_line.h"
 
-char	*ft_get_rest(char *rest, char *buffer, char *out)
-{	
-	char	*temp;
-	int	i;
-	int	j;
-
-	temp = ft_strjoin(rest, buffer);
-	i = 0;
-	while (temp[i] == out[i])
-		i++;
-	j = i;
-	while(temp[j])
-		j++;
-	free(rest);
-	rest = malloc(sizeof(char) * j + 1);
-	if (!rest)
-		return (NULL);
-	j = 0;
-	while(temp[i])
-	{
-		rest[j] = temp[i];
-		j++;
-		i++;
-	}
-	rest[j] = '\0';
-	return (free(temp), rest);
-}
-
-char	*ft_new_line(char *buffer, char *rest)
+char	*ft_fill_line(char *buffer, int fd, char **remain)
 {
-	int		i;
+	int		read_return;
+
+	read_return = 1;
+	while (read_return > 0 && !check_buff(*remain, '\n'))
+	{
+		read_return = read(fd, buffer, BUFFER_SIZE);
+		if (read_return <= 0)
+			break ;
+		buffer[read_return] = 0;
+		*remain = ft_strjoin(*remain, buffer);
+	}
+	return (ft_strndup(*remain));
+}
+
+char	*clean_remain(char *remain)
+{
 	char	*out;
+	int		i;
+	int		j;
 
 	i = 0;
-	while (rest[i - 1] != '\n' && rest[i])
+	if (!remain)
+		return (NULL);
+	while (remain[i] && remain[i] != '\n')
 		i++;
-	if (rest[i - 1] == '\n' || (rest[i] == '\0' && !buffer))
+	if (!remain[i] || !remain[i + 1])
+		return (free(remain), NULL);
+	if (remain[i])
+		i++;
+	out = malloc(sizeof(char) * (ft_strlen(remain + i) + 1));
+	if (!out)
+		return (free(remain), NULL);
+	j = 0;
+	while (remain[i])
 	{
-		out = ft_nlncpy(rest, i);
-		return (out);
+		out[j] = remain[i];
+		i++;
+		j++;
 	}
-	else
-		out = ft_nljoin(rest, buffer);
-		return (out);
-}
+	out[j] = 0;
+	return (free(remain), out);
+}	
 
 char	*get_next_line(int fd)
 {
+	char		*line;
 	char		*buffer;
-	char		*out;
-	static char	*rest;
-	
+	static char	*remain;
+
+	line = "";
+	buffer = "";
 	if (BUFFER_SIZE < 1 || fd < 0)
 		return (NULL);
-	if (!rest)
-		rest = "";
-	buffer = malloc(sizeof(char) * BUFFER_SIZE);
+	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
 		return (NULL);
-	read(fd, buffer, BUFFER_SIZE);
-	if (!buffer)
-		return (NULL);
-	out = ft_new_line(buffer, rest);
-	rest = ft_get_rest(rest, buffer, out); 
-	return (free(buffer), out);
+	line = ft_fill_line(buffer, fd, &remain);
+	remain = clean_remain(remain);
+	return (free(buffer), line);
 }
-
-#include <stdio.h>
-
-int	main()
-{
-	char	*str;
-	int	fd;
-
-	fd = open("get_next_line.h", O_RDONLY);
-	if (fd < 0)
-		return (printf("error\n"));
-	str = get_next_line(fd);
-	printf("%s\n", str);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

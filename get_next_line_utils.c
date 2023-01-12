@@ -5,97 +5,89 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: tschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/25 00:40:43 by tschecro          #+#    #+#             */
-/*   Updated: 2022/11/25 04:40:04 by tschecro         ###   ########.fr       */
+/*   Created: 2023/01/12 02:06:21 by tschecro          #+#    #+#             */
+/*   Updated: 2023/01/12 06:42:09 by tschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "get_next_line.h"
-
-char	*ft_nlncpy(char *src, int n)
-{
-	int	i;
-	char	*out;
-
-	out = malloc(sizeof(char) * n + 1);
-	if (!out)
-		return (NULL);
-	i = 0;
-	while (src[i] && i < n)
-	{
-		out[i] = src[i];
-		i++;
-	}
-	out[i] = '\0';
-	return (out);
-}
-
-int	ft_nljoinlen(char *str)
-{
-	int	i;
-
-	i = 0;
-	while (str[i] && str[i - 1] != '\n')
-		i++;
-	return (i);
-}
-
-char	*ft_nljoin(char *s1, char *s2)
-{
-	 char	*out;
-	 int	i;
-	 int	j;
-
-	 out = malloc(sizeof(char) * (ft_nljoinlen(s1) + ft_nljoinlen(s2)) + 1);
-	 if (!out)
-		 return (NULL);
-	 i = 0;
-	 while (s1[i])
-	 {
-		out[i] = s1[i];
-		i++;
-	 }
-	 j = 0;
-	 while (s2[j] && s2[j - 1] != '\n')
-	 {
-		out[i] = s2[j];
-		j++;
-		i++;
-	 }
-	 out[i] = '\0';
-	 return (out);
-}
 
 int	ft_strlen(char *str)
 {
 	int	i;
 
+	if (!str)
+		return (0);
 	i = 0;
-	while(str[i])
+	while (str[i])
 		i++;
 	return (i);
 }
-char	*ft_strjoin(char *s1, char *s2)
-{
-	char	*out;
-	int	i;
-	int	j;
 
-	out = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+char	*ft_strndup(char *str)
+{
+	int		i;
+	char	*out;
+
+	i = 0;
+	if (!str)
+		return (NULL);
+	out = malloc(sizeof(char) * (ft_strlen(str) + 1));
 	if (!out)
 		return (NULL);
 	i = 0;
-	while (s1[i])
+	while (str[i])
 	{
-		out[i] = s1[i];
+		out[i] = str[i];
+		i++;
+		if (out[i - 1] == '\n')
+			break ;
+	}
+	out[i] = 0;
+	return (out);
+}
+
+int	check_buff(char *buffer, char c)
+{
+	int	len;
+
+	len = 0;
+	if (!buffer)
+		return (0);
+	while (buffer[len])
+	{
+		if (buffer[len] == c)
+			return (1);
+		len++;
+	}
+	return (0);
+}
+
+char	*ft_strjoin(char *remain, char *buffer)
+{
+	char	*new_line;
+	int		i;
+	int		j;
+
+	j = 0;
+	i = 0;
+	if (!remain)
+		remain = ft_strndup("\0");
+	if (!buffer)
+		return (NULL);
+	new_line = malloc(sizeof(char) * (ft_strlen(buffer) + ft_strlen(remain) + 1));
+	if (!new_line)
+		return (NULL);
+	while (remain[i])
+	{
+		new_line[i] = remain[i];
 		i++;
 	}
-	j = 0;
-	while (s2[j])
+	while (buffer[j])
 	{
-		out[i] = s2[j];
-		i++;
+		new_line[i + j] = buffer[j];
 		j++;
 	}
-	out[i] = '\0';
-	return (out);
+	new_line[i + j] = 0;
+	return (free(remain), new_line);
 }
