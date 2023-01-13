@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: tschecro <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/12 02:05:36 by tschecro          #+#    #+#             */
-/*   Updated: 2023/01/13 08:42:07 by tschecro         ###   ########.fr       */
+/*   Created: 2023/01/12 10:40:31 by tschecro          #+#    #+#             */
+/*   Updated: 2023/01/13 08:43:52 by tschecro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 char	*ft_fill_line(char *buffer, int fd, char **remain)
 {
@@ -61,7 +61,7 @@ char	*get_next_line(int fd)
 {
 	char		*line;
 	char		*buffer;
-	static char	*remain;
+	static char	*remain[1024];
 
 	line = "";
 	buffer = "";
@@ -70,22 +70,26 @@ char	*get_next_line(int fd)
 	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (!buffer)
 		return (NULL);
-	line = ft_fill_line(buffer, fd, &remain);
-	remain = clean_remain(remain);
+	line = ft_fill_line(buffer, fd, &remain[fd]);
+	remain[fd] = clean_remain(remain[fd]);
 	return (free(buffer), line);
 }
-/*
-#include <stdio.h>
 
-int	main()
+/*int	main()
 {
 	int fd;
+	int fd2;
 	char *str;
 	
 	fd = open("get_next_line.h", O_RDONLY);
+	fd2 = open ("test", O_RDONLY);
 	str = get_next_line(fd);
 	printf("%s", str);
-	
+	str = get_next_line(fd2);
+	printf("%s", str);
+	str = get_next_line(fd);
+	printf("%s", str);
+	str = get_next_line(fd2);
+	printf("%s", str);
 	return (0);
-}
-*/
+}*/
